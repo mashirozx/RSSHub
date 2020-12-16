@@ -1,0 +1,85 @@
+{
+  "version": "https://jsonfeed.org/version/1",
+  {{ if itunes_author }}
+  "itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd",
+  {{ else if item && item.some((i) => i.media) }}
+  "media": "http://search.yahoo.com/mrss/",
+  {{ /if }}
+  "title": "{{@ title || 'RSSHub' }}",
+  "link": "{{ link || 'https://docs.rsshub.app' }}",
+  "description": "{{@ description || title }} - Made with love by RSSHub(https://github.com/DIYgod/RSSHub)",
+  "generator": "RSSHub",
+  "webMaster": "i@diygod.me (DIYgod)",
+  {{ if itunes_author }}
+  "itunesAuthor": "{{ itunes_author}}",
+  {{ /if }}
+  {{ if itunes_category }}
+  "itunesCategory": "{{ itunes_category }}",
+  {{ /if }}
+  {{ if itunes_author }}
+  "itunesExplicit": "{{ itunes_explicit || 'clean' }}",
+  {{ /if }}
+  "language": "{{ language || 'zh-cn' }}",
+  {{ if image }}
+    "image": {
+      "url": "{{ image }}",
+      "title": "{{@ title || 'RSSHub' }}",
+      "link": "{{ link }}"
+    },
+  {{ /if }}
+  "lastBuildDate": "{{ lastBuildDate }}",
+  "ttl": "{{ ttl }}",
+  "items": [
+    {{ each item }}
+      {
+        "title": {{@ stringify($value.title) }},
+        "description": {{@ stringify($value.description || $value.title) }},
+        {{ if $value.pubDate }}
+        "pubDate": "{{ $value.pubDate }}",
+        {{ /if }}
+        "guidIsPermaLink": "{{ $value.guid || $value.link || $value.title }}",
+        "link": "{{ $value.link }}",
+        {{ if $value.itunes_item_image }}
+        "itunesImage": "{{ $value.itunes_item_image }}",
+        {{ /if }}
+        {{ if $value.enclosure_url }}
+        "enclosure": {
+          "url": "{{ $value.enclosure_url }}",
+          {{ if $value.enclosure_length }}
+          "length": {{ $value.enclosure_length }},
+          {{ /if }}
+          {{ if $value.enclosure_type }}
+          "type": "{{ $value.enclosure_type }}"
+          {{ /if }}
+        },
+        {{ /if }}
+        {{ if itunes_author && $value.itunes_duration }}
+        "itunesDuration": "{{ $value.itunes_duration }}",
+        {{ /if }}
+        {{ if $value.author }}
+        "author": "{{ $value.author }}",
+        {{ /if }}
+        {{ if typeof $value.category === 'string' }}
+        "category": "{{ $value.category }}",
+        {{ else }}
+        "category": [
+          {{ each $value.category $c }}
+            "{{ $c }}"{{ if $index !== $value.category.length - 1}},{{ /if}}
+          {{ /each }}
+        ]{{ if $value.media }},{{ /if }}
+        {{ /if }}
+        {{ if $value.media }}
+        "media": {
+          {{ each $value.media $tag }}
+            "{{ $index }}": {
+                {{ each $tag $data }}
+                  "{{ $index }}": "{{ $data }}"{{ if $index !== $tag.length - 1}},{{ /if}}
+                {{ /each }}
+            }{{ if $index !== $value.media.length - 1}},{{ /if}}
+          {{ /each }}
+        }
+        {{ /if }}
+      }{{ if $index !== item.length - 1}},{{ /if}}
+    {{ /each }}
+  ]
+}
