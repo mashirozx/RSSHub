@@ -3,7 +3,7 @@ name: build assets
 on:
   push:
     branches:
-      - master
+      - master-no
     paths:
       - 'lib/**'
 
