@@ -3,7 +3,7 @@ name: build assets
 on:
   push:
     branches:
-      - master
+      - master-no
     paths:
       - 'lib/**'
 
@@ -26,5 +26,8 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./assets
+<<<<<<< HEAD
           user_name: 'github-actions[bot]'
           user_email: '41898282+github-actions[bot]@users.noreply.github.com'
+=======
+>>>>>>> 444b87c94 ([ci] disable assets build)
